@@ -1,0 +1,36 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/cat_list.css' %}">
+{% endblock %}
+{% block content %}
+<div class="category-header">
+    <h1>{{ category.category_name }}</h1>
+    <p>Shop {{ category.category_name }} products</p>
+</div>
+
+<div class="product-grid">
+    {% for product in products %}
+    <div class="product-card">
+        <div class="product-image">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.product_name }}">
+                        {% else %}
+                        <img src="https://via.placeholder.com/300x200?text={{ product.product_name }}" class="card-img-top" alt="{{ product.product_name }}">
+                        {% endif %}
+        </div>
+        <div class="product-info">
+            <h3 class="product-title">{{ product.product_name }}</h3>
+            <div class="product-price">
+                <span class="price-symbol">₹</span>
+                <span class="price-amount">{{ product.price }}</span>
+            </div>
+            <p class="product-description">{{ product.description|truncatechars:100 }}</p>
+            <a href="{% url 'detail_view' product.id %}" class="view-details">View Details</a>
+        </div>
+    </div>
+    {% empty %}
+    <p class="no-products">No products available in this category.</p>
+    {% endfor %}
+</div>
+{% endblock %}

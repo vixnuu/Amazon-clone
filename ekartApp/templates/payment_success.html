@@ -1,0 +1,40 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/cart.css' %}?v={{ STATIC_VERSION }}">
+{% endblock %}
+
+{% block title %}Payment Success{% endblock %}
+
+{% block content %}
+<div class="payment-success-container">
+    <div class="success-header">
+        <div class="success-icon">✓</div>
+        <h2 class="success-title">Payment Successful!</h2>
+        <p class="success-subtitle">Your order has been placed successfully</p>
+    </div>
+
+    <div class="success-content">
+        <div class="success-details">
+            <div class="detail-item">
+                <span class="detail-label">Payment ID:</span>
+                <span class="detail-value">{{ payment_id }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Status:</span>
+                <span class="detail-value success-status">Confirmed</span>
+            </div>
+        </div>
+
+        <div class="success-message">
+            <p>Thank you for shopping with Ekart! You will receive an email confirmation shortly with your order details.</p>
+        </div>
+
+        <div class="success-actions">
+            <a href="{% url 'order_list' %}" class="success-button primary">View My Orders</a>
+            <a href="{% url 'home_view' %}" class="success-button secondary">Continue Shopping</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

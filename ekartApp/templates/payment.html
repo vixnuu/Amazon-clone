@@ -1,0 +1,132 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/cart.css' %}?v={{ STATIC_VERSION }}">
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+{% endblock %}
+
+{% block title %}Payment{% endblock %}
+
+{% block content %}
+<div class="payment-container">
+    <div class="payment-header">
+        <h2 class="payment-title">Complete Your Payment</h2>
+        <p class="payment-subtitle">Review your order and proceed to payment</p>
+    </div>
+
+    <div class="payment-content">
+        <div class="order-summary-section">
+            <h3 class="section-title">Order Summary</h3>
+            {% if carts %}
+            <div class="order-items">
+                {% for cart in carts %}
+                <div class="order-item">
+                    <div class="item-details">
+                        <h4 class="item-name">{{ cart.product.product_name }}</h4>
+                        <p class="item-quantity">Quantity: {{ cart.quantity }}</p>
+                    </div>
+                    <div class="item-price">
+                        <span class="price">${{ cart.product.price }}</span>
+                        <span class="total">${{ cart.total }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="order-items">
+                <div class="order-item">
+                    <div class="item-details">
+                        <h4 class="item-name">{{ product.product_name }}</h4>
+                        <p class="item-quantity">Quantity: {{ quantity }}</p>
+                    </div>
+                    <div class="item-price">
+                        <span class="price">${{ product.price }}</span>
+                        <span class="total">${{ grand_total }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="order-total">
+                <div class="total-row">
+                    <span class="total-label">Grand Total:</span>
+                    <span class="total-amount">${{ grand_total }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="shipping-section">
+            <h3 class="section-title">Shipping Information</h3>
+            <div class="shipping-details">
+                <div class="detail-row">
+                    <span class="detail-label">Delivery Address:</span>
+                    <span class="detail-value">{{ shipping_address }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Contact Number:</span>
+                    <span class="detail-value">{{ contact_number }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="payment-section">
+            <div class="payment-info">
+                <p class="payment-note">You will be redirected to Razorpay's secure payment gateway to complete your transaction.</p>
+            </div>
+            <button id="rzp-button1" class="payment-button">Pay Now - ${{ grand_total }}</button>
+        </div>
+    </div>
+</div>
+
+<script>
+var options = {
+    "key": "{{ razorpay_key_id }}",
+    "amount": "{{ amount }}",
+    "currency": "INR",
+    "name": "Ekart",
+    "description": "Order Payment",
+    "order_id": "{{ payment.id }}",
+    "handler": function (response){
+        // Handle success
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/payment-success/';
+
+        var paymentIdField = document.createElement('input');
+        paymentIdField.type = 'hidden';
+        paymentIdField.name = 'razorpay_payment_id';
+        paymentIdField.value = response.razorpay_payment_id;
+        form.appendChild(paymentIdField);
+
+        var orderIdField = document.createElement('input');
+        orderIdField.type = 'hidden';
+        orderIdField.name = 'razorpay_order_id';
+        orderIdField.value = response.razorpay_order_id;
+        form.appendChild(orderIdField);
+
+        var signatureField = document.createElement('input');
+        signatureField.type = 'hidden';
+        signatureField.name = 'razorpay_signature';
+        signatureField.value = response.razorpay_signature;
+        form.appendChild(signatureField);
+
+        document.body.appendChild(form);
+        form.submit();
+    },
+    "prefill": {
+        "name": "",
+        "email": "",
+        "contact": ""
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+var rzp1 = new Razorpay(options);
+document.getElementById('rzp-button1').onclick = function(e){
+    rzp1.open();
+    e.preventDefault();
+}
+</script>
+{% endblock %}

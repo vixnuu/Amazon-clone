@@ -1,0 +1,30 @@
+{% extends 'home.html' %}
+
+
+
+{% block content %}
+
+ <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.product_name }}">
+            {% else %}
+            <img src="https://via.placeholder.com/600x400?text={{ product.product_name }}" class="card-img-top" alt="{{ product.product_name }}">
+            {% endif %}
+            <div class="card-body">
+              <h5 class="card-title">{{ product.product_name }}</h5>
+              <p class="card-text">{{ product.description }}</p>
+              <p class="product-price h4 text-success">${{ product.price }}</p>
+              <p class="card-text"><small class="text-muted">Category: {{ product.category.category_name }}</small></p>
+              <a href="{% url 'home_view' %}" class="btn btn-primary">Back to Home</a>
+              <a href="{% url 'add_to_cart' product.id %}" class="btn btn-warning">Add to Cart</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+{% endblock %}    

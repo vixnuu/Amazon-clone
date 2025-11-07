@@ -1,0 +1,51 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/cart.css' %}?v={{ STATIC_VERSION }}">
+{% endblock %}
+
+{% block content %}
+<div class="cart-container">
+    <h2 class="cart-title">Your Orders</h2>
+    {% if orders %}
+    <table class="cart-table">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td class="cart-product-name">{{ order.Product.product.product_name }}</td>
+                <td>{{ order.Product.quantity }}</td>
+                <td class="cart-price">${{ order.Product.product.price }}</td>
+                <td class="cart-total">${{ order.total }}</td>
+                <td>{{ order.status }}</td>
+                <td>
+                    {% if order.status == 'order-placed' %}
+                    <button type="button" class="cart-remove-btn" data-url="{% url 'order_cancel' order.id %}">Cancel</button>
+                    {% else %}
+                    N/A
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="cart-empty">You have no orders.</p>
+    {% endif %}
+    <a href="{% url 'home_view' %}" class="cart-continue-shopping">Continue Shopping</a>
+</div>
+
+<script src="{% static 'js/order_cancel_confirm.js' %}"></script>
+{% endblock %}

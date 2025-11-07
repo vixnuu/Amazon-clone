@@ -1,0 +1,61 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/cart.css' %}?v={{ STATIC_VERSION }}">
+{% endblock %}
+
+{% block title %}Place Order{% endblock %}
+
+{% block content %}
+<div class="checkout-container">
+    <div class="checkout-header">
+        <h2 class="checkout-title">Complete Your Order</h2>
+        <p class="checkout-subtitle">Review your items and enter shipping details</p>
+    </div>
+
+    <div class="checkout-content">
+        <div class="order-summary-section">
+            <h3 class="section-title">Order Summary</h3>
+            <div class="order-items">
+                {% for cart in carts %}
+                <div class="order-item">
+                    <div class="item-details">
+                        <h4 class="item-name">{{ cart.product.product_name }}</h4>
+                        <p class="item-quantity">Quantity: {{ cart.quantity }}</p>
+                    </div>
+                    <div class="item-price">
+                        <span class="price">${{ cart.product.price }}</span>
+                        <span class="total">${{ cart.total }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="order-total">
+                <div class="total-row">
+                    <span class="total-label">Grand Total:</span>
+                    <span class="total-amount">${{ grand_total }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="shipping-section">
+            <h3 class="section-title">Shipping Information</h3>
+            <form method="post" class="shipping-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ form.shipping_address.id_for_label }}">Delivery Address</label>
+                    {{ form.shipping_address }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.contact_number.id_for_label }}">Contact Number</label>
+                    {{ form.contact_number }}
+                </div>
+                <button type="submit" class="checkout-button">Proceed to Payment</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

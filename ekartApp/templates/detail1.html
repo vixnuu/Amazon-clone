@@ -1,0 +1,156 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/detail.css' %}">
+<link rel="stylesheet" href="{% static 'css/cat_list.css' %}">
+<script src="{% static 'js/detail.js' %}"></script>
+{% endblock %}
+<!-- ######### -->
+
+{% block content %}
+<div class="product-detail-container">
+    <div class="product-detail">
+        <!-- Left Section: Image Gallery -->
+        <div class="product-images">
+            <div class="main-image">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.product_name }}" id="main-product-image">
+                {% else %}
+                <img src="https://via.placeholder.com/500x500?text={{ product.product_name }}" alt="{{ product.product_name }}" id="main-product-image">
+                {% endif %}
+            </div>
+            <div class="thumbnail-images">
+                <!-- Assuming multiple images; for now, just the main one -->
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="Thumbnail" class="thumbnail active" onclick="changeImage(this)">
+                {% else %}
+                <img src="https://via.placeholder.com/100x100?text={{ product.product_name }}" alt="Thumbnail" class="thumbnail active" onclick="changeImage(this)">
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Center Section: Product Info -->
+        <div class="product-info">
+            <h1 class="product-title">{{ product.product_name }}</h1>
+            <div class="product-rating">
+                <span class="stars">★★★★☆</span>
+                <span class="rating-count">(1,234 ratings)</span>
+                <span class="answered-questions">1,000+ answered questions</span>
+            </div>
+            <div class="product-price">
+                <span class="price">${{ product.price }}</span>
+                <span class="original-price">$199.99</span>
+                <span class="discount">(50% off)</span>
+            </div>
+            <div class="product-description">
+                <h3>About this item</h3>
+                <ul>
+                    <li>{{ product.description }}</li>
+                    <li>High-quality materials for durability</li>
+                    <li>Easy to use and maintain</li>
+                    <li>Available in multiple colors</li>
+                </ul>
+            </div>
+            <div class="product-features">
+                <h3>Key Features</h3>
+                <ul>
+                    <li>Feature 1: Description</li>
+                    <li>Feature 2: Description</li>
+                    <li>Feature 3: Description</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Right Section: Add to Cart -->
+        <div class="add-to-cart-section">
+            <div class="price-box">
+                <span class="price">${{ product.price }}</span>
+                <span class="delivery">FREE delivery</span>
+                <span class="delivery-date">Tomorrow</span>
+                <span class="stock">In Stock</span>
+            </div>
+            <div class="quantity-selector">
+                <label for="quantity">Qty:</label>
+                <!-- <select id="quantity" name="quantity">
+                    
+                </select> -->
+                <input type="number" id="quantity" class="quantity" name="quantity" min="1" value="1">
+                <button type="button" class="add-to-cart-btn" id="add-to-cart-btn" data-product-id="{{ product.id }}" onclick="addToCart('{{ product.id }}')">Add to Cart</button>
+            </div>
+            <!-- <button class="add-to-cart-btn" id="add-to-cart-btn" data-product-id="{{ product.id }}">Add to Cart</button> -->
+            <button class="buy-now-btn" onclick="buyNow('{{ product.id }}')">Buy Now</button>
+            <div class="secure-transaction">
+                <span>🔒 Secure transaction</span>
+            </div>
+            <div class="shipping-info">
+                <p>Ships from: Amazon</p>
+                <p>Sold by: Amazon</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Details Tabs -->
+    <div class="product-details-tabs">
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab(event, 'description')">Product Description</button>
+            <button class="tab-button" onclick="openTab(event, 'reviews')">Customer Reviews</button>
+            <button class="tab-button" onclick="openTab(event, 'qa')">Q&A</button>
+        </div>
+        <div id="description" class="tab-content active">
+            <h3>Product Description</h3>
+            <p>{{ product.description }}</p>
+            <p>Additional detailed information about the product goes here. This section can include specifications, usage instructions, and more.</p>
+        </div>
+        <div id="reviews" class="tab-content">
+            <h3>Customer Reviews</h3>
+            <div class="review">
+                <div class="review-header">
+                    <span class="review-stars">★★★★★</span>
+                    <span class="review-title">Great product!</span>
+                </div>
+                <p class="review-text">This product exceeded my expectations. Highly recommend!</p>
+                <span class="review-author">- John Doe</span>
+            </div>
+            <!-- More reviews can be added here -->
+        </div>
+        <div id="qa" class="tab-content">
+            <h3>Q&A</h3>
+            <div class="qa-item">
+                <p class="question">Q: Is this product durable?</p>
+                <p class="answer">A: Yes, it's made with high-quality materials.</p>
+            </div>
+            <!-- More Q&A items -->
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    <div class="product-grid">
+        {% for related_product in related_products %}
+        <div class="product-card">
+            <div class="product-image">
+                            {% if related_product.image %}
+                            <img src="{{ related_product.image.url }}" class="card-img-top" alt="{{ related_product.product_name }}">
+                            {% else %}
+                            <img src="https://via.placeholder.com/300x200?text={{ related_product.product_name }}" class="card-img-top" alt="{{ product.product_name }}">
+                            {% endif %}
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">{{ related_product.product_name }}</h3>
+                <div class="product-price">
+                    <span class="price-symbol">₹</span>
+                    <span class="price-amount">{{ related_product.price }}</span>
+                </div>
+                <p class="product-description">{{ related_product.description|truncatechars:100 }}</p>
+                <a href="{% url 'detail_view' related_product.id %}" class="view-details">View Details</a>
+            </div>
+        </div>
+        {% empty %}
+        <p class="no-products">No products available in this category.</p>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+{% endblock %}

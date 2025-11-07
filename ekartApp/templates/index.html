@@ -1,0 +1,249 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A professional Amazon homepage clone showcasing various product categories with responsive design.">
+    <title>Amazon Clone</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="{% static 'css/style2.css' %}?v={{ STATIC_VERSION }}">
+    <link rel="stylesheet" href="{% static 'css/popup.css' %}?v={{ STATIC_VERSION }}">
+    {% block head %}{% endblock %}
+    <script src="{% static 'js/script.js' %}"></script>
+    <script src="{% static 'js/popup.js' %}"></script>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <a class="navlogo border" href="{% url 'home_view' %}">
+                <div class="logo" role="img" aria-label="Amazon Logo"></div>
+            </a>
+            {% if request.user.is_authenticated %}
+                {% if request.user.is_superuser %}
+                    <a class="btn" href="{% url 'admin_home' %}">Admin Dashboard</a>
+                {% else %}
+                <div class="navadd border">
+                    <p class="deli">Deliver to Valliyoorkavu.....</p>
+                    <div class="addicon">
+                        <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                        <p class="update">Update Location</p>
+                    </div>
+                </div>
+                {% endif %}
+            {% else %}
+                <div class="navadd ">
+                    <div class="addicon">
+                        <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                        <p class="update">Update Location</p>
+                    </div>
+                </div>    
+            {% endif %}
+            <div class="navsearch border">
+                <select name="search-category" class="searall" aria-label="Search category">
+                    <option value="">All</option>
+                </select>
+                <input type="text" placeholder="Search Amazon" class="searam" aria-label="Search input">
+                <div class="searchicon" aria-label="Search button">
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                </div>
+            </div>
+            <div class="nation border">
+                <div class="flag" role="img" aria-label="Flag"></div>
+                <p>EN</p>
+            </div>
+            <div class="hello dropdown">
+                {% if user.is_authenticated %}
+                    {% if user.is_superuser %}
+                        <button class="dropdown-toggle" type="button" id="dropdownMenuButton">
+                            <p class="p1"><span>Hello, Admin</span></p>
+                            <p class="p2">Account & Lists</p>
+                        </button>
+                    {% else %}
+                        <button class="dropdown-toggle" type="button" id="dropdownMenuButton">
+                            <p class="p1"><span>Hello, {{ user.username }}</span></p>
+                            <p class="p2">Account & Lists</p>
+                        </button>
+                    {% endif %}
+                {% else %}
+                    <button class="dropdown-toggle" type="button" id="dropdownMenuButton">
+                        <p class="p1"><span>Hello, Guest</span></p>
+                        <p class="p2">Account & Lists</p>
+                    </button>
+                {% endif %}
+
+
+                <div class="dropdown-menu" id="dropdownMenu">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'logout' %}" class="dropdown-item">Logout</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="dropdown-item">Login</a>
+                        <a href="{% url 'register' %}" class="dropdown-item">Sign Up</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="order">
+                <a href="{% url 'order_list' %}">
+                    <div>
+                        <p class="p1"><span>Returns</span></p>
+                    <p class="p2">& Orders</p>
+                    </div>
+                    <p class="count">{{order_count}}</p>
+                </a>
+                
+            </div>
+
+
+            <div class="cart">
+                <a href="{% url 'cart_list' %}">
+                    <i class="fas fa-shopping-cart"></i>
+                    Cart <span class="badge">{{cart_count}}</span>
+                </a>
+            </div>
+        </nav>
+
+
+
+
+        <nav class="panel">
+            <div class="all border">
+                <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                All
+            </div>
+            <div class="panelops">
+                <p class="border">Today's Deals</p>
+                <p class="border">Customer Service</p>
+                <p class="border">Gift Cards</p>
+                <p class="border">Registry</p>
+                <p class="border">Sell</p>
+            </div>
+            <div class="paneldeals border">
+                Shop deals in electronics
+            </div>
+        </nav>
+    </header>
+{% block content %}
+
+<div id="message-popup" class="popup" data-has-messages="{% if messages %}true{% else %}false{% endif %}">
+    {% for i in messages %}
+        <strong>{{i}}</strong>
+    {% endfor %}
+    <button type="button" class="close-btn" onclick="closePopup()" aria-label="Close">&times;</button>
+</div>
+
+    <section class="herosection">
+        <div class="heromsg">
+            <p>You are on amazon.com. You can also shop on Amazon India for millions of products with fast local delivery. <a href="#">Click here to go to amazon.in</a></p>
+        </div>
+    </section>
+
+    <main class="shopping">
+        
+
+
+
+            <!-- CATEGORIES -->
+        {% for category in categories %}
+            <article class="box">
+                <div class="boxcontent">
+                    <h3>{{ category.category_name }}</h3>
+                    <div class="boximg" >
+                        <img src="{{ category.image.url }}" alt="{{ category.category_name }}">
+                    </div>
+                    <p><a href="{% url 'category_list' category.id %}">See more</a></p>
+                </div>
+            </article>
+        {% endfor %}
+
+
+
+
+
+
+
+
+
+            <!-- PRODUCRTS -->
+
+        <!-- {% for product in products %}
+            <article class="box">
+                <div class="boxcontent">
+                    <h3>{{ product.product_name }}</h3>
+                    <div class="boximg" >
+                        
+            
+                    </div>
+                    <p><a href="{% url 'detail_view' product.id %}">See more</a></p>
+                </div>
+            </article>
+
+
+
+        {% endfor %} -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    </main>
+
+
+{% endblock %}
+
+    <footer>
+        <div class="footerp1" id="footer1">
+            <p class="border"><a href="#top">Back to top</a></p>
+        </div>
+        <div class="footerp2">
+            <div class="p1">
+                <h3>Get to Know Us</h3>
+                <p>Careers</p>
+                <p>Blog</p>
+                <p>About Amazon</p>
+                <p>Investor Relations</p>
+                <p>Amazon Devices</p>
+            </div>
+            <div class="p1">
+                <h3>Make Money with Us</h3>
+                <p>Sell products on Amazon</p>
+                <p>Sell on Amazon Business</p>
+                <p>Sell apps on Amazon</p>
+                <p>Become an Affiliate</p>
+                <p>Advertise Your Products</p>
+                <p>Self-Publish with Us</p>
+                <p>Host an Amazon Hub</p>
+            </div>
+            <div class="p1">
+                <h3>Amazon Payment Products</h3>
+                <p>Amazon Business Card</p>
+                <p>Shop with Points</p>
+                <p>Reload Your Balance</p>
+                <p>Amazon Currency Converter</p>
+            </div>
+            <div class="p1">
+                <h3>Let Us Help You</h3>
+                <p>Your Account</p>
+                <p>Your Orders</p>
+                <p>Amazon and COVID-19</p>
+                <p>Returns & Replacements</p>
+                <p>Manage Your Content and Devices</p>
+                <p>Help</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+

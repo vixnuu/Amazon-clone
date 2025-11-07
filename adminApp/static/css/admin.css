@@ -1,0 +1,28 @@
+/* Admin Dashboard Styles */
+.sidebar {
+    min-height: 100vh;
+    background-color: #343a40;
+    color: white;
+    position: fixed;
+}
+.sidebar .nav-link {
+    color: rgba(255,255,255,.75);
+}
+.sidebar .nav-link:hover {
+    color: white;
+    background-color: rgba(255,255,255,.1);
+}
+.metric-card {
+    transition: transform 0.2s;
+}
+.metric-card:hover {
+    transform: translateY(-5px);
+}
+.metric-icon {
+    font-size: 2rem;
+    opacity: 0.8;
+}
+.a{
+    text-decoration: none;
+    color: inherit;
+}
