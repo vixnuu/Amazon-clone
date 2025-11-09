@@ -25,7 +25,6 @@ class HomeView(TemplateView):
         context=super().get_context_data(**kwargs)
         context['products']=Products.objects.all()
         context['categories']=Category.objects.all()
-        print(context)
         return context
     def get(self, request, *args, **kwargs):
         user=request.user

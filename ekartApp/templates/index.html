@@ -123,7 +123,6 @@
             </div>
         </nav>
     </header>
-{% block content %}
 
 <div id="message-popup" class="popup" data-has-messages="{% if messages %}true{% else %}false{% endif %}">
     {% for i in messages %}
@@ -131,6 +130,9 @@
     {% endfor %}
     <button type="button" class="close-btn" onclick="closePopup()" aria-label="Close">&times;</button>
 </div>
+
+
+{% block content %}
 
     <section class="herosection">
         <div class="heromsg">
